@@ -1,36 +1,19 @@
-# Email a random XKCD challenge
+# CU-ASSIST
 
-### Subscribe to XKCD comics and get comic emails every five minutes.
+### Create your account and ask questions about anything.
 
 ## Made with 
 - HTML
 - CSS
-- PHP
-- MySQL
+- Django
+- SQLite3
 
-## Platforms
-- [Mailjet](https://www.mailjet.com)
-- [Heroku](https://www.heroku.com)
+## Description of CU-ASSIST
 
-## Description of XKCD comic mailer
+- This is a Django application which is created for college students of Chandigarh University. Here, any student can ask any query and other students can answer those queries.
 
-- This is a PHP application that accepts a visitor’s email address and emails them a random XKCD comics.
+- *views.py*: it contains all the backend logic.
 
-- *connection.php*: is used to connect with the database.
+- *styles.css*: is used for giving the styles to the index.html.
 
-- *index.php*: is used for entering the user details like username, email address and also helps to send email verification to the user.
-
-- *sendmail.php*: is used to verify the user's email address.
-
-- *cron.php*: is used to send the random emails from the https://c.xkcd.com/random/comic/ by using the cronjob functionality
-
-
-- *images*: All the images used will be stored in this folder.
-
-- *styles.css*: is used for giving the styles to the index.php.
-
-## Getting Started
-- Enter Email !
-- Open mailbox and click on the verification link !
-- Enjoy XKCD Comics at every 5 minutes in Inbox !
 
