@@ -1,0 +1,325 @@
+{% extends 'basic.html' %}
+{% block title %} Assist.Index{% endblock %}
+{% block body %}
+{% load static %}
+<!-- modals -->
+
+<!-- Large modal for sign in -->
+
+
+
+<!-- Large modal for sign in -->
+
+<!-- large modal for asking questions=========================================================== -->
+
+<div class="modal fade question-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content question-modal-body">
+
+      <h3>Ask your Question here!</h3>
+      <hr>
+      <form action="/" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <input type="text" class="login-inp" name="title" placeholder="Enter your Question title">
+        <div class="row container ">
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <select class="login-inp question-list" name="dept" id="exampleFormControlSelect1">
+              <option>Category</option>
+              <option value="1">Computer Science</option>
+              <option value="2">Mechanical</option>
+              <option value="3">Civil</option>
+              <option value="4">Electronics</option>
+              <option value="5">MBA</option>
+              <option value="6">BBA</option>
+            </select>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <select name="tag" class="login-inp question-list">
+              <option>Select a tag</option>
+              <div>
+                <option value="technews">Tech News</option>
+                <option value="webdev">Web Developmnt</option>
+                <option value="javaprog">Java Programming</option>
+                <option value="ds">Data Structure</option>
+              </div>
+            </select>
+
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <input name="img" type="file" class="login-inp question-list">
+          </div>
+        </div>
+
+        <textarea id="question_desc" name="description" rows="3" class=" login-inp"
+          placeholder="Describe your question"></textarea>
+        <button type="submit" name="submit" class="btn btn-success login-inp">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- lare modal for asking quetions -->
+
+<!-- modals -->
+<section id="main-body">
+  <div class="card">
+    <div class="branch-box">
+      <a href="/">
+        <div class="btn sections" onclick="sellerOpt(event, 'home')" ;>
+          <p>Home</p>
+        </div>
+      </a>
+      <a href="/?dept=1">
+        <div class="btn sections" onclick="sellerOpt(event, 'cse')" ;>
+          <p>Computer Science</p>
+        </div>
+      </a>
+      <a href="/?dept=2">
+        <div class="btn sections" onclick="sellerOpt(event, 'Mechanical')">
+          <p>Mechanical</p>
+        </div>
+      </a>
+      <a href="/?dept=3">
+        <div class="btn sections" onclick="sellerOpt(event, 'Civil')">
+          <p>Civil</p>
+        </div>
+      </a>
+      <a href="/?dept=4">
+        <div class="btn sections" onclick="sellerOpt(event, 'Electronics')">
+          <p>Electronics</p>
+        </div>
+      </a>
+      <a href="/?dept=5">
+        <div class="btn sections" onclick="sellerOpt(event, 'MBA')">
+          <p>MBA</p>
+        </div>
+      </a>
+      <a href="/?dept=5">
+        <div class="btn sections" onclick="sellerOpt(event, 'BBA')">
+          <p>BBA</p>
+        </div>
+      </a>
+      <a href="/?dept=5">
+        <div class="btn sections" onclick="sellerOpt(event, 'B.Sc')">
+          <p>B.Sc</p>
+        </div>
+      </a>
+      <div class="btn sections" onclick="sellerOpt(event, 'BCA')">
+        <p>BCA</p>
+      </div>
+      <div class="btn sections" onclick="sellerOpt(event, 'M.C.A')">
+        <p>M.C.A</p>
+      </div>
+      <div class="btn sections" onclick="sellerOpt(event, 'LLb')">
+        <p>LLb</p>
+      </div>
+
+    </div>
+  </div>
+  <div class="card">
+    <div class="container query-box">
+      <h2>
+        <p class="text-type2">Have a question in mind? No worries!</p>
+      </h2>
+      <div class="btn btn-danger" data-toggle="modal" data-target=".question-modal"> <b> Ask a Question </b></div>
+    </div>
+    {% for i in post %}
+    <div class="post-plate container">
+      <h6>
+        <h5>{{i.post_title}}</h5>
+      </h6>
+      <div class="image-box">
+        <img class="post-image" src="/media/{{i.post_images}}" alt="image-1">
+      </div>
+      <script>
+        var slides = document.getElementsByClassName('post-image');
+        for (var i = 0; i < slides.length; i++) {
+          thePath = document.getElementsByClassName('post-image')[i].src;
+          console.log("src is = " + thePath);
+          var Item = thePath.substring(thePath.lastIndexOf('/') + 1);
+          console.log("Last segment = " + Item);
+          if (Item == 0) {
+            slide[i].style.backgroundColor = "#00FF00";
+          }
+        }
+      </script>
+      <div class="post-caption">
+        <p class="text-type2">
+          {{i.post_desc| truncatechars:520|safe}}</p>
+      </div>
+      <a href="postview/{{i.slug}}/{{i.id}}">
+        <div>Read More!
+        </div>
+      </a>
+      <br>
+      <div class="post-buttons">
+        <form action=" {% url 'handlePostLikes' i.id %} " method="POST">{% csrf_token %}
+          <button type="submit" name="post_id" value={{ i.id }} class=" btn react-btn">
+            <i class=" far fa-thumbs-up"></i>&nbsp;{{ i.total_likes }}
+          </button>
+        </form>
+        <a href="postview/{{i.slug}}/{{i.id}}">
+          <div class=" btn react-btn">
+            Add Comment
+          </div>
+        </a>
+        <form action=" {% url 'handlePostLikes' i.id %} " method="POST">{% csrf_token %}
+          <button type="submit" name="post_id" value={{ i.id }} class=" btn react-btn">
+            <i class=" far fa-thumbs-down"></i>
+          </button>
+        </form>
+
+
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+  <div class="card">
+    <div id="home" class="tabcontent">
+
+    </div>
+    <div id="cse" class="deptcontent">
+      <div class="btn ">
+        <p>Tech News</p>
+      </div>
+      <div class="btn ">
+        <p>Web Development</p>
+      </div>
+      <div class="btn ">
+        <p>Java Programming</p>
+      </div>
+      <div class="btn ">
+        <p>Data structure</p>
+      </div>
+    </div>
+    <div id="Mechanical" class="deptcontent">
+      <div class="btn ">
+        <p>Applied Mechanics</p>
+      </div>
+      <div class="btn ">
+        <p>Machine Drawing</p>
+      </div>
+      <div class="btn ">
+        <p>T.O.M</p>
+      </div>
+      <div class="btn ">
+        <p>Workshop</p>
+      </div>
+    </div>
+    <div id="Civil" class="deptcontent">
+      <div class="btn ">
+        <p>Civil-1</p>
+      </div>
+      <div class="btn ">
+        <p>Civil-2</p>
+      </div>
+      <div class="btn ">
+        <p>Civil-3</p>
+      </div>
+      <div class="btn ">
+        <p>Civil-4</p>
+      </div>
+    </div>
+    <div id="Electronics" class="deptcontent">
+      <div class="btn ">
+        <p>Electronics-1</p>
+      </div>
+      <div class="btn ">
+        <p>Electronics-2</p>
+      </div>
+      <div class="btn ">
+        <p>Electronics-3</p>
+      </div>
+      <div class="btn ">
+        <p>Electronics-4</p>
+      </div>
+    </div>
+    <div id="MBA" class="deptcontent">
+      <div class="btn ">
+        <p>MBA-1</p>
+      </div>
+      <div class="btn ">
+        <p>MBA-2</p>
+      </div>
+      <div class="btn ">
+        <p>MBA-3</p>
+      </div>
+      <div class="btn ">
+        <p>MBA-4</p>
+      </div>
+    </div>
+    <div id="BBA" class="deptcontent">
+      <div class="btn ">
+        <p>BBA-1</p>
+      </div>
+      <div class="btn ">
+        <p>BBA-2</p>
+      </div>
+      <div class="btn ">
+        <p>BBA-3</p>
+      </div>
+      <div class="btn ">
+        <p>BBA-4</p>
+      </div>
+    </div>
+    <div id="B.Sc" class="deptcontent">
+      <div class="btn ">
+        <p>B.Sc-1</p>
+      </div>
+      <div class="btn ">
+        <p>B.Sc-2</p>
+      </div>
+      <div class="btn ">
+        <p>B.Sc-3</p>
+      </div>
+      <div class="btn ">
+        <p>B.Sc-4</p>
+      </div>
+    </div>
+    <div id="BCA" class="deptcontent">
+      <div class="btn ">
+        <p>BCA-1</p>
+      </div>
+      <div class="btn ">
+        <p>BCA-2</p>
+      </div>
+      <div class="btn ">
+        <p>BCA-3</p>
+      </div>
+      <div class="btn ">
+        <p>BCA-4</p>
+      </div>
+    </div>
+    <div id="M.C.A" class="deptcontent">
+      <div class="btn ">
+        <p>M.C.A-1</p>
+      </div>
+      <div class="btn ">
+        <p>M.C.A-2</p>
+      </div>
+      <div class="btn ">
+        <p>M.C.A-3</p>
+      </div>
+      <div class="btn ">
+        <p>M.C.A-4</p>
+      </div>
+    </div>
+    <div id="LLb" class="deptcontent">
+      <div class="btn ">
+        <p>LLb-1</p>
+      </div>
+      <div class="btn ">
+        <p>LLb-2</p>
+      </div>
+      <div class="btn ">
+        <p>LLb-3</p>
+      </div>
+      <div class="btn ">
+        <p>LLb-4</p>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{%static 'js/tinyinject.js' %}"></script>
+{% endblock %}

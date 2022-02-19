@@ -1,1 +1,1 @@
-# CU-ASSIST
+This is a community forum website created for college students.

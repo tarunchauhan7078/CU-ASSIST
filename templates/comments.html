@@ -1,0 +1,222 @@
+{% extends 'basic.html' %}
+{% block title %} Assist.Comments{% endblock %}
+{% block css %}
+#main-body >.card
+{
+width: 85% !important;
+margin-top: -25px !important;
+}
+.container
+{
+width: 100% !important;
+min-height:98%;
+background-color:#fff !important;
+margin-top: 10px;
+border-radius:10px;
+}
+.container
+{
+min-height:fit-content !important;
+}
+
+.image-box
+{
+text-align:center;
+height: 350px;
+}
+.post-image
+{
+    height:100%;
+}
+.post-caption
+{
+    height:fit-content;
+}
+textarea , .reply-input-box
+{
+max-width:100%;
+border-radius: 7px;
+border:2px solid #e0d8d8;
+padding: 5px;
+}
+.reply-input-box
+{
+width: 88%;
+display: inline-block;
+margin-left:4%;
+}
+.comment-submit
+{
+display: block;
+color: #fff;
+background-color: #96a1f0 ;
+margin-left: auto !important;
+border-radius: 5px;
+max-width:fit-content;
+}
+.comment-submit:hover
+{
+color: #fff;
+background-color: #8d98e3
+}
+.comment-submit:nth-child(1), .reply-submit-btn
+{
+display:inline-block;
+}
+.post-comments
+{
+padding:10px;
+}
+.user-icon
+{
+font-size:50px;
+}
+hr {
+margin-top: 5px;
+margin-bottom: 0;
+border: 0;
+border-top: 1px solid rgba(0,0,0,.1);
+}
+.post-user-details
+{
+margin-bottom:0;
+}
+.reply-container
+{
+margin-top:5px;
+width:100% !important;
+}
+{% endblock %}
+{% block body %}
+<section id="main-body">
+    {% load humanize %}
+    {% load extras  %}
+    <div class="card">
+        <div class="container">
+            <br>
+            <h2>Relevent Comments.</h2>
+            <br>
+        </div>
+        <div class="container">
+            <br>
+            <div class="image-box">
+                <img class="post-image" src="/media/{{post.post_images}}" alt="image-1">
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <h4>{{post.post_title}}</h4>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <p class="post-user-details">Post by: {{post.post_user }}</p>
+                    <p class="post-user-details">Posted on: {{post.post_date}}</p>
+                </div>
+            </div>
+
+            <hr>
+            <div class="post-caption">
+                <p class="text-type2">{{post.post_desc|safe}}</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2>Write a Response <i class="far fa-comment"></i></h2>
+            <hr>
+            <form action="/postcomment" method="post">{% csrf_token %}
+                <textarea name="comment" id="comment" cols="160" rows="2" placeholder="Enter comment here"
+                    required></textarea>
+                <input type="hidden" name="postSno" value="{{post.id}}">
+                <input type="hidden" name="parentSno" value="">
+                {% if user.is_authenticated %}
+                <button class="btn comment-submit" type="submit"><b>POST</b> <i
+                        class="fas fa-arrow-alt-circle-right"></i></button>
+                {% else %}
+                <div class="btn comment-submit" data-toggle="modal" data-target=".bd-example-modal-lg"><b>Sign-in to
+                        post a comment!</b></div>
+                {% endif %}
+            </form>
+            <br>
+        </div>
+
+        <div class="container">
+            <br>
+            <h3>Responses({{ comments.count }}): </h3>
+            <br>
+        </div>
+
+        {% for comment in comments %}
+        <div class=" container post-comments">
+
+            <div class="row">
+                <div class="col-lg-1 col-md-1 col-sm-1">
+                    <i class="user-icon fas fa-user"></i>
+                </div>
+                <div class="col-lg-11 col-md-11 col-sm-11">
+                    <h6>{{ comment.user.username }}</h6>
+                    <p>Posted: {{ comment.timestamp | naturaltime}}</p>
+                </div>
+            </div>
+            <hr>
+            <p>{{comment.comment}}</p>
+            <div class="reply">
+                {% if user.is_authenticated %}
+                <button class="btn btn-sm comment-submit " type="button" data-toggle="collapse"
+                    data-target="#replyBox{{comment.sno}}" aria-expanded="false"
+                    aria-controls="replyBox{{comment.sno}}">
+                    Reply to this comment
+                </button>
+                <div class="collapse" id="replyBox{{comment.sno}}">
+                    <div class="container reply-container">
+                        <form action="/postcomment" method="post">{% csrf_token %}
+                            <input class="reply-input-box" type="text" name="comment" id="comment"
+                                placeholder="Enter reply here" required>
+                            <input type="hidden" name="postSno" value="{{post.id}}">
+                            <input type="hidden" name="parentSno" value="{{comment.sno}}">
+
+                            <button class="btn btn-sm mb-1 comment-submit reply-submit-btn" type="submit"
+                                name="submit"><b>POST</b> <i class="fas fa-arrow-alt-circle-right"></i></button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="btn comment-submit" data-toggle="modal" data-target=".bd-example-modal-lg"><b>Sign-in to
+                        reply!</b></div>
+                {% endif %}
+                <div class="replies my-2">
+                    {% for reply in replyDict|get_val:comment.sno %}
+                    <div class="row">
+                        <div class="col-lg-1 col-md-1" style="text-align: right; padding-right: 0;"><i
+                                class="far fa-user"></i></div>
+                        <div class="col-lg-7 col-md-7">{{reply.comment}}</div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <span>By: {{reply.user}}</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    {{reply.timestamp | naturaltime}}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr style="width: 90%">
+
+                    <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+</section>
+{% for msg in messages %}
+<script>
+    window.onload = function () {
+        alert('{{msg}}')
+    }
+</script>
+{% endfor %}
+
+{% endblock %}
