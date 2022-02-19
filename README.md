@@ -34,4 +34,3 @@
 - Open mailbox and click on the verification link !
 - Enjoy XKCD Comics at every 5 minutes in Inbox !
 
-*LIVE DEMO* :  https://xkcdcomicsbykalyanjit.herokuapp.com
